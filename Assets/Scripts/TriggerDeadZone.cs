@@ -6,9 +6,12 @@ public class TriggerDeadZone : MonoBehaviour
 {
     public GameObject spawnZone;
 
-    void OnTriggerEnter2D(Collider2D collider)
+ void OnTriggerEnter2D(Collider2D col)
     {
-        var p = collider.gameObject.GetComponent<Transform>();
-
+        Debug.Log(col.gameObject.name + " : " + gameObject.name + " : " + Time.time);
+        if (col.tag == "Player") 
+        {
+            col.gameObject.transform.position = spawnZone.transform.position;
+        }
     }
 }
