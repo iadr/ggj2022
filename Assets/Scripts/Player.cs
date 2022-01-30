@@ -67,12 +67,12 @@ public class Player : MonoBehaviour {
 		if (Input.GetAxis("Horizontal") != 0)
         {
             horizontalInput = Input.GetAxis("Horizontal");
-			animator.SetFloat("speed",1.0f);
+			animator.SetBool("moving", true);
         }
         else
         {
             horizontalInput = 0;
-			animator.SetFloat("speed", 0.0f);
+			animator.SetBool("moving", false);
         }
 
 		CalculateVelocity ();
