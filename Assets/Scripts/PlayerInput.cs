@@ -5,6 +5,7 @@ using System.Collections;
 public class PlayerInput : MonoBehaviour {
 
 	Player player;
+	public Animator animator;
 
 	public int life = 5;
 
@@ -29,10 +30,12 @@ public class PlayerInput : MonoBehaviour {
 		}
 
 		if (Input.GetKeyDown (KeyCode.Q)) {
+			animator.SetTrigger("shooting");
 			player.Shoot (1); // FIRE
 		}
 
 		if (Input.GetKeyDown (KeyCode.E)) {
+			animator.SetTrigger("shooting");
 			player.Shoot (0); // FROST
 		}
 	}
