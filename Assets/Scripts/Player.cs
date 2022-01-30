@@ -31,21 +31,57 @@ public class Player : MonoBehaviour {
 	bool wallSliding;
 	int wallDirX;
 
+
+	public GameObject fire;
+	public GameObject frost;
+
+    public bool isFacingLeft;
+    public bool spawnFacingLeft;
+    private Vector2 facingLeft;
+
+	private float horizontalInput;
+
+	public Animator animator;
+
 	void Start() {
 		controller = GetComponent<Controller2D> ();
 
 		gravity = -(2 * maxJumpHeight) / Mathf.Pow (timeToJumpApex, 2);
 		maxJumpVelocity = Mathf.Abs(gravity) * timeToJumpApex;
 		minJumpVelocity = Mathf.Sqrt (2 * Mathf.Abs (gravity) * minJumpHeight);
+		
+		Initialization();
 	}
 
+	protected virtual void Initialization()
+    {
+        facingLeft = new Vector2(-transform.localScale.x, transform.localScale.y);
+        if(spawnFacingLeft)
+        {
+            transform.localScale = facingLeft;
+            isFacingLeft = true;
+        }
+    }
+
 	void Update() {
+		if (Input.GetAxis("Horizontal") != 0)
+        {
+            horizontalInput = Input.GetAxis("Horizontal");
+			animator.SetFloat("speed",1.0f);
+        }
+        else
+        {
+            horizontalInput = 0;
+			animator.SetFloat("speed", 0.0f);
+        }
+
 		CalculateVelocity ();
 		HandleWallSliding ();
 
 		controller.Move (velocity * Time.deltaTime, directionalInput);
 
 		if (controller.collisions.above || controller.collisions.below) {
+			animator.SetBool("jumping", false);
 			if (controller.collisions.slidingDownMaxSlope) {
 				velocity.y += controller.collisions.slopeNormal.y * -gravity * Time.deltaTime;
 			} else {
@@ -83,6 +119,7 @@ public class Player : MonoBehaviour {
 				velocity.y = maxJumpVelocity;
 			}
 		}
+		animator.SetBool("jumping", true);
 	}
 
 	public void OnJumpInputUp() {
@@ -126,4 +163,44 @@ public class Player : MonoBehaviour {
 		velocity.x = Mathf.SmoothDamp (velocity.x, targetVelocityX, ref velocityXSmoothing, (controller.collisions.below)?accelerationTimeGrounded:accelerationTimeAirborne);
 		velocity.y += gravity * Time.deltaTime;
 	}
+
+	public void Shoot( int element = 1) {
+		GameObject missle;
+		if (element == 1) {
+			missle = Instantiate(fire, new Vector3(transform.position.x + 0.5f, transform.position.y, 0), Quaternion.identity);
+		} else {
+			missle = Instantiate(frost, new Vector3(transform.position.x + 0.5f, transform.position.y, 0), Quaternion.identity);
+		}
+		// Debug.Log();
+		missle.GetComponent<Rigidbody2D>().AddForce(new Vector3(1,0,0) * 200);
+		Destroy(missle, 1f);
+	}
+
+	private void FixedUpdate()
+    {
+        if(horizontalInput > 0 && isFacingLeft)
+        {
+            isFacingLeft = false;
+            Flip();
+        }
+        if(horizontalInput < 0 && !isFacingLeft)
+        {
+            isFacingLeft = true;
+            Flip();
+        }
+    }
+
+	protected virtual void Flip()
+    {
+        if (isFacingLeft)
+        {
+            transform.localScale = facingLeft;
+        }
+        if (!isFacingLeft)
+        {
+            transform.localScale = new Vector2(-transform.localScale.x, transform.localScale.y);
+        }
+    }
+
+
 }
