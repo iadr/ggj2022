@@ -166,13 +166,21 @@ public class Player : MonoBehaviour {
 
 	public void Shoot( int element = 1) {
 		GameObject missle;
-		if (element == 1) {
-			missle = Instantiate(fire, new Vector3(transform.position.x + 0.5f, transform.position.y, 0), Quaternion.identity);
-		} else {
-			missle = Instantiate(frost, new Vector3(transform.position.x + 0.5f, transform.position.y, 0), Quaternion.identity);
+		GameObject prefab = frost;
+
+		Vector3 position = new Vector3(transform.position.x + 0.5f, transform.position.y, 0);
+		Vector3 force = new Vector3(1,0,0);
+		if (isFacingLeft) {
+			position = new Vector3(transform.position.x - 0.5f, transform.position.y, 0);
+			force = new Vector3(-1,0,0);
 		}
-		// Debug.Log();
-		missle.GetComponent<Rigidbody2D>().AddForce(new Vector3(1,0,0) * 200);
+
+		if (element == 1) {
+			prefab = fire;
+		}
+		
+		missle = Instantiate(prefab, position, Quaternion.identity);
+		missle.GetComponent<Rigidbody2D>().AddForce(force * 200);
 		Destroy(missle, 1f);
 	}
 

@@ -11,7 +11,8 @@ public class TriggerDeadZone : MonoBehaviour
         Debug.Log(col.gameObject.name + " : " + gameObject.name + " : " + Time.time);
         if (col.tag == "Player") 
         {
-            col.gameObject.transform.position = spawnZone.transform.position;
+            col.GetComponent<PlayerInput>().ReceiveDamage();            
+            // col.gameObject.transform.position = spawnZone.transform.position;
         }
     }
 }

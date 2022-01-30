@@ -6,6 +6,7 @@ public class PlayerInput : MonoBehaviour {
 
 	Player player;
 	public Animator animator;
+	public corazones vidas;
 
 	public int life = 5;
 
@@ -16,7 +17,8 @@ public class PlayerInput : MonoBehaviour {
 	void Update () {
 
 		if (life == 0) {
-            //game over;
+			animator.SetTrigger("dying");
+            return;
         }
 
 		Vector2 directionalInput = new Vector2 (Input.GetAxisRaw ("Horizontal"), Input.GetAxisRaw ("Vertical"));
@@ -40,7 +42,10 @@ public class PlayerInput : MonoBehaviour {
 		}
 	}
 
-	void ReceiveDamage () {
+	public void ReceiveDamage () {
 		life --;
+		vidas.quitarCorazon();
+		if (life > 0 ) animator.SetTrigger("hurt");
+		Debug.Log(life);
 	}
 }
